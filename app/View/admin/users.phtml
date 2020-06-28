@@ -1,0 +1,13 @@
+<?php
+/** @var Illuminate\Database\Eloquent\Collection $users */
+$users = $this->users;
+/** @var \App\Model\Eloquent\User $user */
+?>
+
+<?php if(!$users->isEmpty()):?>
+    <?php foreach ($users as $user):?>
+        <?= $user->id;?># <?=$user->name; ?> <br>
+    <?php endforeach ?>
+<?php else:?>
+    Пользователей нет
+<?php endif; ?>

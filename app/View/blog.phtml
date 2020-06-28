@@ -1,0 +1,57 @@
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+    var lastId = <?= (int) $this->last_id?>;
+</script>
+
+<style>
+    .message { margin: 5px 0 0 5px; border: 1px solid grey; width: 450px; min-height: 100px;}
+    .author { margin-left: 10px; }
+    .text { padding-left: 15px; padding-top: 15px; }
+    .date {color: grey; font-size: 11px;}
+    .admin a { color: #46468b; float: right; padding-right: 15px; }
+</style>
+
+Список сообщений: <br>
+<?php
+/** @var $message \App\Model\Eloquent\Message */
+/** @var $user \App\Model\User */
+$user = $this->user;
+/** @var Illuminate\Database\Eloquent\Collection $messages */
+$messages = $this->messages;
+?>
+
+Вы вошли как <?= $user->getName(); ?> # <?= $user->getId();?>
+
+<div id="messages">
+<?php include 'messageList.phtml'; ?>
+</div>
+
+<?php if($this->has_next):?>
+    <br>
+    <input id="next_button" type="button" onclick="loadMessages();" value="Еще" style="width: 435px;"><br><br>
+<?php endif; ?>
+
+Добавить сообщение
+<form enctype="multipart/form-data" action="/blog/addMessage" method="post">
+    <textarea style="width: 250px; height: 150px;" type="text" value="" name="text"></textarea><br><br>
+    Изображение: <input type="file" name="image"><br>
+    <input type="submit" value="Отправить">
+</form>
+
+<script>
+    var lastId = <?=$this->last_id?>;
+
+    function loadMessages()
+    {
+        $.get('/blog/loadList/?last_id=' + lastId, {}, function (r) {
+            var html = $('#messages').html();
+            var newHtml = html + r.html;
+            $('#messages').html(newHtml);
+            lastId = r.last_id;
+
+            if (!r.has_next) {
+                $('#next_button').hide();
+            }
+        })
+    }
+</script>
